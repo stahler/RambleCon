@@ -1,3 +1,4 @@
+break
 <# Get the Module from the PowerShell Gallery
     https://www.powershellgallery.com/packages/ImportExcel/7.8.5
     https://github.com/dfinke/ImportExcel
@@ -10,7 +11,7 @@
 Find-Module ImportExcel
 
 # Install the module
-Find-Module ImportExcel | Import-Module ImportExcel
+Find-Module ImportExcel | Install-Module ImportExcel
 
 # Import the module into our session
 Import-Module ImportExcel
@@ -20,5 +21,10 @@ Get-Module ImportExcel | Format-List
 
 # Explore the various cmdlets it has to offer
 Get-Command -Module ImportExcel | Out-GridView
+
+Get-ADUser -Filter {samaccountname -like "Stah*"} -Properties Department, Title | 
+Select-Object Name, Enabled, Department, Title | Export-Excel
+
+#Export-Excel -Path C:\temp\users.xlsx -AutoSize -Show
 
 
