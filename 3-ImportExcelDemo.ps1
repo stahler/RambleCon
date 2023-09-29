@@ -22,7 +22,7 @@ Get-Module ImportExcel | Format-List
 
 # Explore the various cmdlets it has to offer
 Get-Command -Module ImportExcel | Out-GridView
-#endregion                          ##########################################################
+#endregion
 
 #region - Conditional Formatting    ##########################################################
 # Let's kick out some data to Excel (simple example)
@@ -50,12 +50,144 @@ $c1 = New-ConditionalText -ConditionalType UniqueValues -Range '$A:$C'
 
 $Mark | Export-Excel $xlfile -WorksheetName $wsName
 $Wes | Export-Excel $xlfile -WorksheetName $wsName -StartColumn 3 -ConditionalText $c1 -Show
-#endregion                          ##########################################################
+#endregion
 
 #region - Charts                    ##########################################################
-#endregion                          ##########################################################
+# Add a Chart
+$path = "$env:TEMP\ExampleChart.xlsx"
+Remove-Item -Path $path -ErrorAction SilentlyContinue
+
+# create some fake data
+$data = ConvertFrom-Csv @"
+Name,Weight
+Shawn,380
+Thom,215
+West,210
+"@
+
+# define our chart parameters
+$chartParameters = @{
+    ChartType = 'ColumnClustered'
+    XRange    = 'Name'
+    YRange    = 'Weight'
+    Title     = 'Example Chart Title'
+    TitleBold = $true
+    NoLegend  = $true
+    Column    = 3
+    Row       = 0
+    Width     = 300 
+    Height    = 200    
+}
+$chart = New-ExcelChartDefinition @chartParameters
+
+# define excel parameters
+$ExcelParameters = @{
+    InputObject          = $data
+    Show                 = $true
+    AutoSize             = $true
+    ExcelChartDefinition = $chart
+    AutoNameRange        = $true
+}
+Export-Excel @ExcelParameters
+
+# Multiple Charts
+# create some "data", note the formula in th 4th column
+$data = ConvertFrom-Csv @"
+Name,Weight, Height,Ratio
+Shawn,350,76,"=b2/c2"
+Wes,210,69,"=b3/c3"
+Thom, 205,73,"=b4/c4"
+Sam,105,69,"=b5/c5"
+"@
+
+# paramters for our pie chart
+$pie = @{
+    ChartType    = 'Pie3D'
+    XRange       = 'name'
+    YRange       = 'weight'
+    Height       = 200
+    ShowCategory = $true
+    NoLegend     = $true
+    Width        = 225
+    Row          = 5
+    Column       = 3
+    Title        = "Mmmm Pie"
+}
+$pie = New-ExcelChart @pie
+
+# parameters for our bar chart
+$bar = @{
+    XRange   = 'Name'
+    YRange   = 'weight'
+    Height   = 200
+    Row      = 5
+    Column   = 0
+    NoLegend = $true 
+    Width    = 190
+    Title    = "Bar hopping"
+}
+New-ExcelChart @bar
+
+# pass our data with the two chart definitions
+$data | Export-Excel -AutoSize -AutoNameRange -ExcelChartDefinition $bar, $pie
+#endregion
 
 #region - Pivot tables              ##########################################################
+Get-ADUser -Filter {samaccountname -like "Stah*"} -Properties Department, Title | 
+Select-Object Name, Enabled, Department, Title | 
+Export-Excel -IncludePivotTable -PivotRows Enabled -PivotData @{Enabled='Count'}
+
+# Create Multiple Pivot Tables
+$xlFile = "C:\TEMP\MultiplePivotTables.xlsx"
+Remove-Item -Path $xlFile -ErrorAction SilentlyContinue
+
+# create some data 
+$data = ConvertFrom-Csv @"
+Name,State,City
+Thom,Ohio,Columbus
+West,Ohio,Dayton
+Chris,Ohio,Columbus
+Gern,Michigan,Holland
+Hari,Michigan,Holland
+Shawn,Michigan,Grand Rapids
+Todd,Michigan,Flint
+"@
+
+# parameters for Data worksheet {Splatting}
+$params = @{
+    Path          = $xlFile
+    WorkSheetName = 'Data'
+    InputObject   = $data 
+    AutoSize      = $true
+    BoldTopRow    = $true
+    FreezeTopRow  = $true
+    PassThru      = $true
+}
+
+$xl = Export-Excel @params 
+
+$null = Add-Worksheet -ExcelPackage $xl -WorkSheetname "PivotTable"
+
+# parameters for pivotTable (By State)
+$pivotTableParams = @{
+    PivotTableName  = 'ByState'
+    Address         = $xl.PivotTable.cells["A1"]
+    SourceWorkSheet = $xl.Data
+    PivotRows       = 'State'
+    PivotData       = @{'Name' = 'Count' }
+    PivotTableStyle = 'Light20'
+}
+
+# add first pivotTable (By City)
+$null = Add-PivotTable @pivotTableParams
+
+# modify pivotTable parameters and add the second one.
+$pivotTableParams.Address = $xl.PivotTable.cells["D1"]
+$pivotTableParams.PivotTableName = 'ByCity'
+$pivotTableParams.PivotRows = 'City'
+$null = Add-PivotTable @pivotTableParams
+
+Close-ExcelPackage $xl -Show
 #endregion                          ##########################################################
 
 #region - other examples            ##########################################################
