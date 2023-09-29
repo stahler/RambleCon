@@ -3,7 +3,7 @@ break
     https://www.powershellgallery.com/packages/ImportExcel/7.8.5
     https://github.com/dfinke/ImportExcel
     
-    Doug Finke Microsoft MVP since forever...
+    Doug Finke Microsoft MVP since forever and a great guy...
     Check out his GitHub repo: https://github.com/dfinke
 #>
 
