@@ -1,11 +1,14 @@
 break
 # Get the module https://github.com/dfinke/PowerShellAI
 
+# may need to get/set the key
+Set-OpenAIKey -Key (Get-Secret -Name ChatGPT)
+
 # simple request for translation
-Get-GPT3Completion "Hello friends in Russian, Japanese and French"
+Get-GPT4Completion "Hello friends in Russian, Japanese and French"
 
 # example of getting specific info and dictating format
-Get-GPT3Completion -prompt "List planets name,size and number of moons as json"
+Get-GPT4Completion  "List planets name,size and number of moons as json"
 
 # building off last example, automate creating a spreadsheet
 New-SpreadSheet -prompt "List planets name,size and number of moons"
