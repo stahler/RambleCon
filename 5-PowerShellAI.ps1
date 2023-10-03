@@ -19,6 +19,21 @@ copilot -inputPrompt "Using PowerShell, get all disabled users with a last name 
 # get distinct domains from email, group and show where count is > 100
 copilot "using PowerShell ActiveDirectory Module. Split Domain from email attribute then group by domain and show only where domain count is greater then 100"
 
+$prompt = @'
+You are a SQL Server expert.
+Can you give me the SQL code to generate a table called Employees that has the following:
+UniqueID
+FirstName
+LastName
+AddressLine1
+AddressLine2
+City
+State
+Zip
+'@
+
+copilot $prompt
+
 # allows for pipeline passing
 ai "cheat sheet for regular expressions as a spreadsheet" | ConvertFrom-GPTMarkdownTable | Export-Excel
 
