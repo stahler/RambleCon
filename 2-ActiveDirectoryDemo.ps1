@@ -11,9 +11,10 @@ Get-Command -Module ActiveDirectory -Verb Get | Out-GridView
 Get-Command -Module ActiveDirectory -Noun ADUser | Out-GridView
 
 # examples
-Get-ADUser stah06 -Properties Department, Title
-Get-ADUser -Filter {samaccountname -like "Stah*"} -Properties Department, Title | Select-Object Name, Enabled, Department, Title
-Get-ADUser -LDAPFilter "(&(title=*)(samaccountname=Stah*))" -Properties Department, Title | Select-Object Name, Enabled, Department, Title
+Get-ADUser crews2
+Get-ADUser crews2 -Properties Description, Title
+Get-ADUser -Filter {samaccountname -like "crew*"} -Properties Department, Title | Select-Object Name, Enabled, Department, Title
+Get-ADUser -LDAPFilter "(&(title=*)(samaccountname=crew*))" -Properties Department, Title | Select-Object Name, Enabled, Department, Title
 
 Search-ADAccount -LockedOut
-Get-ADPrincipalGroupMembership stah06 | Sort-Object Name | Select-Object Name
+Get-ADPrincipalGroupMembership crews2 | Sort-Object Name | Select-Object Name

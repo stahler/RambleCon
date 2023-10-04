@@ -8,13 +8,13 @@ Set-OpenAIKey -Key (Get-Secret -Name ChatGPT)
 Get-GPT4Completion "Hello friends in Russian, Japanese and French"
 
 # example of getting specific info and dictating format
-Get-GPT4Completion  "List planets name,size and number of moons as json"
+Get-GPT4Completion  "List planets name, size and number of moons as json"
 
 # building off last example, automate creating a spreadsheet
-New-SpreadSheet -prompt "List planets name,size and number of moons"
+New-SpreadSheet -prompt "List planets name, size and number of moons"
 
 # Example on writing code.
-copilot -inputPrompt "Using PowerShell, get all disabled users with a last name like 'sta*' "
+copilot -inputPrompt "Using PowerShell, create a LDAPFilter and then use it to get all disabled users with a last name like 'sta*' "
 
 # get distinct domains from email, group and show where count is > 100
 copilot "using PowerShell ActiveDirectory Module. Split Domain from email attribute then group by domain and show only where domain count is greater then 100"

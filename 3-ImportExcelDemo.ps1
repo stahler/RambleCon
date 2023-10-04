@@ -26,14 +26,14 @@ Get-Command -Module ImportExcel | Out-GridView
 
 #region - Conditional Formatting    ##########################################################
 # Let's kick out some data to Excel (simple example)
-Get-ADUser -Filter {samaccountname -like "Stah*"} -Properties Department, Title | 
+Get-ADUser -Filter {samaccountname -like "crew*"} -Properties Department, Title | 
 Select-Object Name, Enabled, Department, Title | Export-Excel
 
 # Simple Conditional Formatting
-$disabled = New-ConditionalText False #White Red
 $enabled = New-ConditionalText True white Green
-Get-ADUser -Filter {samaccountname -like "Stah*"} -Properties Department, Title | 
-Select-Object Name, Enabled, Department, Title | Export-Excel -ConditionalText $disabled #, $enabled
+$disabled = New-ConditionalText False White Red
+Get-ADUser -Filter {samaccountname -like "crew*"} -Properties Department, Title | 
+Select-Object Name, Enabled, Department, Title | Export-Excel -ConditionalText $disabled, $enabled
 
 # Example of IconSets
 # https://gist.github.com/stahler/97bb228b9d43c3ba4f1194cb7ea95880#file-add-iconset-ps1
@@ -65,7 +65,7 @@ Thom,215
 West,210
 "@
 
-# define our chart parameters
+# define our chart parameters (introducing splatting)
 $chartParameters = @{
     ChartType = 'ColumnClustered'
     XRange    = 'Name'
@@ -78,7 +78,7 @@ $chartParameters = @{
     Width     = 300 
     Height    = 200    
 }
-$chart = New-ExcelChartDefinition @chartParameters
+$chart = New-ExcelChartDefinition @chartParameters 
 
 # define excel parameters
 $ExcelParameters = @{
@@ -93,10 +93,10 @@ Export-Excel @ExcelParameters
 # Multiple Charts
 # create some "data", note the formula in th 4th column
 $data = ConvertFrom-Csv @"
-Name,Weight, Height,Ratio
+Name,Weight,Height,Ratio
 Shawn,350,76,"=b2/c2"
 Wes,210,69,"=b3/c3"
-Thom, 205,73,"=b4/c4"
+Thom,205,73,"=b4/c4"
 Sam,105,69,"=b5/c5"
 "@
 

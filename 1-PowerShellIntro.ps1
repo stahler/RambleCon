@@ -17,7 +17,7 @@ Get-Help Get-Process -ShowWindow
 # Get-Command
 Get-Command *IPC*
 Get-Command -Noun Process
-Get-Command -verb Get 
+Get-Command -Verb Get 
 Get-Command | Measure-Object
 Get-Command -Module ActiveDirectory | Measure-Object
 Get-Command -Module ActiveDirectory -Noun ADUser
